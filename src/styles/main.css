@@ -1,0 +1,10 @@
+.text-btn {
+  font-size: 14px;
+  color: #1890ff;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    color: #40a9ff;
+  }
+}
