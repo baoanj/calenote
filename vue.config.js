@@ -1,5 +1,5 @@
 module.exports = {
   baseUrl: '',
-  assetsDir: 'assets',
+  assetsDir: 'static',
   productionSourceMap: false,
 };

@@ -8,16 +8,18 @@
   </div>
 </template>
 
+<!-- default PostCSS, add lang="postcss" just for highlight -->
 <style lang="postcss">
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: consolas, Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: var(--mainTextColor);
+  font-size: var(--mainFontSize);
 
   & #nav {
     padding: 30px;
+    text-align: center;
 
     & a {
       font-weight: bold;
