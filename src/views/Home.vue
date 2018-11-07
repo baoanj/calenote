@@ -1,52 +1,99 @@
 <template>
-<div class="home">
-  <img src="@/assets/logo.png">
-  <Modal v-show="visible">
-    <p slot="header">确认离开当前页面？</p>
-    <p slot="content">当前修改未保存，确认离开？</p>
-    <div slot="footer">
-      <span class="text-btn modal-cancle" @click="cancelLeave">取消</span>
-      <span class="text-btn" @click="confirmLeave">确定</span>
+  <div class="counter-container">
+    <div>
+      <v-btn @click="changeFooBar">add</v-btn>
     </div>
-  </Modal>
-</div>
+    <Counter
+      label="结果"
+      placeholder="请输入"
+      id="id-for-input"
+      class="class-for-root"
+      spanClass="class-for-span"
+      inputClass="class-for-input"
+      v-bind="counts"
+      v-model="content"
+      @focus="status = '正在输入'"
+      @blur="status = '没在输入'"
+    >
+      <!-- 将 `slotProps` 定义为插槽作用域的名字，此处使用了ES2015解构语法 -->
+      <template slot-scope="{ myTodo, myIndex }">
+        <!-- 为待办项自定义一个模板，通过 `slotProps` 定制每个待办项。-->
+        <span>{{ myIndex }} - </span>
+        <span :class="{'todo-complete': myTodo.isComplete}">
+          {{ myTodo.text }}
+        </span>
+      </template>
+    </Counter>
+    <p>{{status}}</p>
+  </div>
 </template>
 
 <script>
-// @ is an alias to /src - https://webpack.js.org/configuration/resolve/#resolve-alias
-import Modal from '@/components/Modal.vue';
+import Counter from './Counter.vue';
 
 export default {
-  name: 'home',
-  components: {
-    Modal,
-  },
-  beforeRouteLeave(to, from, next) {
-    this.visible = true;
-    this.nextFunc = next;
-  },
-  destroyed() {
-    console.log('destroyed'); // eslint-disable-line
-  },
+  name: 'Home',
+  components: { Counter },
   data() {
     return {
-      visible: false,
-      nextFunc: null,
+      counts: {
+        foo: 0,
+        bar: [0],
+        width: 250,
+        todos: [
+          {
+            id: 1,
+            text: 'aaa',
+            isComplete: true,
+          }, {
+            id: 2,
+            text: 'bbb',
+            isComplete: false,
+          }, {
+            id: 3,
+            text: 'ccc',
+            isComplete: false,
+          },
+        ],
+      },
+      content: '',
+      status: '没在输入',
     };
   },
   methods: {
-    cancelLeave() {
-      this.visible = false;
-    },
-    confirmLeave() {
-      this.nextFunc();
+    changeFooBar() {
+      this.counts.foo += 1;
+      this.counts.bar.push(this.counts.foo);
     },
   },
 };
 </script>
 
 <style lang="postcss" scoped>
-.modal-cancle {
-  margin-right: 10px;
+.counter-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.todo-complete {
+  text-decoration: line-through;
 }
 </style>
+
+<style lang="postcss">
+.class-for-span {
+  color: blueviolet;
+}
+
+#id-for-input.class-for-input {
+  transition: all 0.3s;
+
+  &:hover,
+  &:focus {
+    border: 1px solid var(--mainColor);
+  }
+}
+</style>
+
