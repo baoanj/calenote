@@ -47,7 +47,7 @@ export default {
   width: 0;
   height: 4px;
   z-index: 3;
-  background-color: var(--mainColor);
+  background-color: var(--main-color);
   transition: all 0.2s;
 }
 </style>

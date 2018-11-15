@@ -10,6 +10,7 @@
     </div>
     <div class="input-container">
       <input
+        ref="input"
         type="text"
         :class="['normal-input', $attrs.inputClass]"
         :style="{ width: `${$attrs.width || 300}px` }"
@@ -61,7 +62,10 @@ export default {
         return value.length > 0;
       },
     },
-    content: String,
+    content: {
+      type: String,
+      required: true,
+    },
     todos: Array,
   },
   data() {
@@ -89,6 +93,19 @@ export default {
         },
       );
     },
+  },
+  methods: {
+    parentFocus() {
+      this.$refs.input.focus();
+      // $parent - 访问父级组件实例
+      this.$parent.status += '哦^_^';
+    },
+  },
+  // use in children: `inject: ['di']` - 依赖注入(provide & inject)
+  provide() {
+    return {
+      di: this.parentFocus,
+    };
   },
 };
 </script>

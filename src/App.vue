@@ -42,8 +42,8 @@ export default {
   font-family: consolas, Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: var(--mainTextColor);
-  font-size: var(--mainFontSize);
+  color: var(--main-text-tolor);
+  font-size: var(--main-font-size);
 
   & #nav {
     padding: 0 30px;
@@ -51,10 +51,10 @@ export default {
 
     & a {
       font-weight: bold;
-      color: var(--mainTextColor);
+      color: var(--main-text-color);
 
       &.router-link-exact-active {
-        color: var(--mainColor);
+        color: var(--main-color);
       }
     }
   }

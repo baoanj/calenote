@@ -41,5 +41,15 @@ Vue.use(Vuetify);
 new Vue({
   router,
   store,
+  // this.$root - 访问根实例
+  data: {
+    vuexx: 'store from root',
+    mainColor: getComputedStyle(document.body).getPropertyValue('--main-color').trim(),
+  },
+  methods: {
+    xAction() {
+      this.vuexx = 'change root store';
+    },
+  },
   render: h => h(App),
 }).$mount('#app');
