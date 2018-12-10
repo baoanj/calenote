@@ -24,7 +24,15 @@
 
   <v-content>
     <keep-alive>
-      <router-view/>
+      <transition
+        name="page"
+        mode="out-in"
+        :duration="{ enter: 1000, leave: 300 }"
+        enter-active-class="animated slideInRight"
+        leave-active-class="animated slideOutLeft"
+      >
+        <router-view/>
+      </transition>
     </keep-alive>
   </v-content>
 </v-app>
@@ -37,7 +45,9 @@ export default {
 </script>
 
 <!-- default PostCSS, add lang="postcss" just for highlight -->
-<style lang="postcss">
+<style lang="postcss" scoped>
+@import './styles/animate.css'; /* postcss-import */
+
 #app {
   font-family: consolas, Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -45,7 +55,7 @@ export default {
   color: var(--main-text-tolor);
   font-size: var(--main-font-size);
 
-  & #nav {
+  & #nav { /* nest: postcss-preset-env stage 0 */
     padding: 0 30px;
     text-align: center;
 

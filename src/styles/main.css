@@ -19,3 +19,9 @@
     color: #40a9ff;
   }
 }
+
+
+/*************** Vuetify ***************/
+.v-btn {
+  text-transform: none;
+}

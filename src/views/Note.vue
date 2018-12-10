@@ -39,8 +39,11 @@ export default {
       }
     },
     confirmLeave() {
+      this.visible = false;
       if (util.isFunction(this.nextFunc)) {
-        this.nextFunc();
+        this.$nextTick(() => {
+          this.nextFunc();
+        });
       }
     },
   },

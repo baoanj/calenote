@@ -1,9 +1,11 @@
 <script>
+import PrimaryTransition from '@/components/PrimaryTransition.vue';
+
 export default {
   name: 'About',
   data() {
     return {
-      toggle: '',
+      toggle: '谢谢参与',
     };
   },
   methods: {
@@ -34,7 +36,9 @@ export default {
             true-value="你中奖了"
             false-value="谢谢参与"
           />
-          <span>{ toggle }</span>
+          <PrimaryTransition name="trans-scale">
+            <span key={toggle} class="result">{ toggle }</span>
+          </PrimaryTransition>
         </div>
       </div>
     );
@@ -45,5 +49,9 @@ export default {
 <style lang="postcss" scoped>
 .about {
   text-align: center;
+
+  & .result {
+    display: inline-block;
+  }
 }
 </style>

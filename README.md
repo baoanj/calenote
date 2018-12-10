@@ -1,21 +1,21 @@
 # calenote
 
 ## Project setup
-```
-npm install
+```bash
+yarn
 ```
 
 ### Compiles and hot-reloads for development
-```
-npm run serve
+```bash
+yarn serve # npm run serve
 ```
 
 ### Compiles and minifies for production
-```
-npm run build
+```bash
+yarn build # npm run build
 ```
 
-### Lints and fixes files
-```
-npm run lint
+### Lints files
+```bash
+yarn lint # npm run lint
 ```

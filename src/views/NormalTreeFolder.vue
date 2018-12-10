@@ -1,32 +1,39 @@
 <template>
 <div>
   <p class="folder-name" @click="expandFolder">
-    <span :class="['folder-arrow', {'folder-arrow-expand': expand},
-      {'folder-arrow-shrink': !expand}]">{{ folder.name }}</span>
+    <span :class="['folder-arrow', {'folder-arrow__expand': expand},
+      {'folder-arrow__shrink': !expand}]">{{ folder.name }}</span>
   </p>
   <TreeFolderContent
     ref="tfc"
     :style="{height, display}"
+    class="tree-folder-content"
     :children="folder.children"
+    type="normal"
+    :defaultExpand="defaultExpand"
   />
 </div>
 </template>
 
 <script>
 export default {
-  name: 'TreeFolder',
+  name: 'NormalTreeFolder',
   components: {
     TreeFolderContent: () => import('./TreeFolderContent.vue'),
   },
   props: {
     folder: Object,
+    defaultExpand: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
-      expand: true,
+      expand: this.defaultExpand,
       height: '',
-      display: '',
-      elementHeight: 0,
+      display: this.defaultExpand ? '' : 'none',
+      elementHeight: '',
       expandTimer: null,
       shrinkTimer: null,
     };
@@ -56,16 +63,21 @@ export default {
           clearTimeout(this.expandTimer);
           this.expandTimer = null;
         }
-        this.height = 0;
-        this.display = 'block';
-        setTimeout(() => {
-          this.height = this.elementHeight;
-          this.expand = true;
-          this.shrinkTimer = setTimeout(() => {
-            this.height = '';
-            this.shrinkTimer = null;
-          }, 300);
-        }, 0);
+        this.display = '';
+        this.$nextTick(() => {
+          if (!this.elementHeight) {
+            this.elementHeight = `${this.$refs.tfc.$el.clientHeight}px`;
+          }
+          this.height = 0;
+          setTimeout(() => {
+            this.height = this.elementHeight;
+            this.expand = true;
+            this.shrinkTimer = setTimeout(() => {
+              this.height = '';
+              this.shrinkTimer = null;
+            }, 300);
+          }, 0);
+        });
       }
     },
   },
@@ -104,13 +116,12 @@ p {
   transition: all 0.3s;
 }
 
-.folder-arrow-expand::before {
+.folder-arrow__expand::before {
   transform: rotate(45deg);
 }
 
-.folder-arrow-shrink::before {
+.folder-arrow__shrink::before {
   transform: rotate(-45deg);
   top: 5px;
 }
 </style>
-
