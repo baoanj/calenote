@@ -42,11 +42,19 @@ export default new Router({
     {
       path: '/',
       name: 'home',
+      meta: {
+        title: '首页',
+        keepAlive: true,
+      },
       component: Home,
     },
     {
       path: '/about',
       name: 'about',
+      meta: {
+        title: '关于',
+        keepAlive: false,
+      },
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
@@ -55,12 +63,20 @@ export default new Router({
     {
       path: '/note',
       name: 'note',
+      meta: {
+        title: '注意',
+        keepAlive: true,
+      },
       // 不能使用 lazyLoadView ，不然导致 beforeRouteLeave 不能用
       component: () => import(/* webpackChunkName: "note" */ '@/views/Note.vue'),
     },
     {
       path: '/vuetify',
       name: 'vuetify',
+      meta: {
+        title: 'Vuetify',
+        keepAlive: true,
+      },
       component: () => lazyLoadView(import(/* webpackChunkName: "vuetify" */ '@/views/Vuetify.vue')),
     },
   ],

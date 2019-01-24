@@ -100,6 +100,35 @@
       <AnimateInteger :value="sumComputed"></AnimateInteger>
     </p>
   </div>
+  <div class="grid-card">
+    <span>store reference: {{store.hello}}</span>
+    <FormInput
+      v-model="inputHints"
+      :inputHistory="inputHistory"
+      placeholder="输入并回车"
+      :store="store"
+    ></FormInput>
+  </div>
+  <div class="grid-card">
+    <span v-popup:hover="content">Les Rois Du Monde</span>
+    <input v-popup:focus="'你好，请输入'" class="normal-input">
+    <br>
+    <span v-popup:hover.right="'hello right'">Les Rois Du Monde</span>
+    <textarea rows="3" v-popup:focus.left="'hello left'" class="normal-input"></textarea>
+    <br>
+    <input v-focus placeholder="auto focus" class="normal-input">
+  </div>
+  <div class="grid-card">
+    <p
+      :title="now | addTail('时间戳(点击刷新)')"
+      @click="now = Date.now()"
+    >现在：{{ now | timeFormat }}</p>
+    <p>三天后：{{ now | daysLater(3) | timeFormat('YYYY/MM/DD hh:mm:ss 星期W') }}</p>
+    <p>一周后：{{ now | daysLater(7) | timeFormat('M.D h:m') }}</p>
+    <p>三十天后：{{ now | daysLater(30) | timeFormat('MM/DD/YYYY 周W DD-MM-YYYY') }}</p>
+    <p>五百天后：{{ now | daysLater(500) | timeFormat('YYYY年M月D日 h点m分s秒 星期W') }}</p>
+  </div>
+  <PrimaryMessage ref="homeMessage"></PrimaryMessage>
 </div>
 </template>
 
@@ -110,6 +139,7 @@ import NormalTreeFolder from './NormalTreeFolder.vue';
 import TransitionTreeFolder from './TransitionTreeFolder.vue';
 import TransitionList from './TransitionList.vue';
 import AnimateInteger from './AnimateInteger.vue';
+import FormInput from './FormInput.vue';
 
 export default {
   name: 'Home',
@@ -120,8 +150,14 @@ export default {
     TransitionTreeFolder,
     TransitionList,
     AnimateInteger,
+    FormInput,
+  },
+  props: {
+    store: Object,
   },
   mounted() {
+    console.log('Home: mounted');
+
     // $on,$once,$off - 程序化的事件侦听器
     this.$on('counterWidthPlus', (val) => {
       this.counts.width += val;
@@ -132,6 +168,15 @@ export default {
     this.$once('counterWidthMinus', (val) => {
       this.counts.width -= val;
     });
+  },
+  destroyed() {
+    console.log('Home: destroyed');
+  },
+  activated() {
+    console.log('Home: activated');
+  },
+  deactivated() {
+    console.log('Home: deactivated');
   },
   data() {
     return {
@@ -177,6 +222,9 @@ export default {
       },
       firstNumber: 20,
       secondNumber: 40,
+      inputHints: [],
+      inputHistory: ['123', '456', 'abc'],
+      now: Date.now(),
     };
   },
   methods: {
@@ -184,10 +232,12 @@ export default {
       this.counts.foo += 1;
       this.counts.bar.push(this.counts.foo);
       this.$emit('counterWidthPlus', 10);
+      this.$message(this.counts.bar);
     },
     focusCounterInput() {
       this.$refs.counter.parentFocus();
       this.$emit('counterWidthMinus', 10);
+      this.$refs.homeMessage.msg(this.status);
     },
     addOneTodo() {
       const num = this.counts.todos.length + 1;
@@ -218,6 +268,21 @@ export default {
       return num1 + num2;
     },
   },
+  directives: {
+    focus: {
+      inserted(el) {
+        el.focus();
+      },
+    },
+  },
+  filters: {
+    daysLater(now, num) {
+      return now + num * 24 * 60 * 60 * 1000;
+    },
+    addTail(val, tail) {
+      return `${val}\n${tail}\ngithub@baoanj`;
+    },
+  },
 };
 </script>
 
@@ -244,6 +309,10 @@ export default {
 .input-number {
   display: inline-block;
   width: 35%;
+}
+
+.normal-input {
+  border: 1px solid #ccc;
 }
 </style>
 

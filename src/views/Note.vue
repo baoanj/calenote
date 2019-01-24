@@ -23,7 +23,7 @@ export default {
     this.nextFunc = next;
   },
   destroyed() {
-    console.log('destroyed'); // eslint-disable-line
+    console.log('destroyed');
   },
   data() {
     return {

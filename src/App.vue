@@ -23,17 +23,18 @@
   </v-toolbar>
 
   <v-content>
-    <keep-alive>
-      <transition
-        name="page"
-        mode="out-in"
-        :duration="{ enter: 1000, leave: 300 }"
-        enter-active-class="animated slideInRight"
-        leave-active-class="animated slideOutLeft"
-      >
-        <router-view/>
-      </transition>
-    </keep-alive>
+    <transition
+      name="page"
+      mode="out-in"
+      :duration="{ enter: 1000, leave: 300 }"
+      enter-active-class="animated slideInRight"
+      leave-active-class="animated slideOutLeft"
+    >
+      <keep-alive v-if="$route.meta.keepAlive">
+        <router-view :store="store"></router-view>
+      </keep-alive>
+      <router-view v-else :store="store"></router-view>
+    </transition>
   </v-content>
 </v-app>
 </template>
@@ -41,6 +42,19 @@
 <script>
 export default {
   name: 'App',
+  data() {
+    return {
+      store: {}, // 引用同一个对象，父子组件、不同页面间传递数据的一种方式
+    };
+  },
+  mounted() {
+    document.title = this.$route.meta.title;
+  },
+  watch: {
+    '$route.meta.title': (val) => {
+      document.title = val || 'calenote';
+    },
+  },
 };
 </script>
 

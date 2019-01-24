@@ -17,6 +17,7 @@
 <script>
 export default {
   name: 'PrimaryModal',
+  compTitle: '模态框',
 };
 </script>
 
