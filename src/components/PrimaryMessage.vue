@@ -1,7 +1,9 @@
 <template>
 <transition name="message">
   <div v-if="show" class="message">
-    {{message}}
+    <slot name="prefix" :duration="duration"></slot>
+    <span class="message-text">{{message}}</span>
+    <slot name="postfix" :duration="duration"></slot>
   </div>
 </transition>
 </template>
@@ -13,15 +15,22 @@ export default {
     return {
       show: false,
       message: '',
+      timer: null,
+      duration: 0,
     };
   },
   methods: {
     msg(text, duration = 1000) {
       this.show = true;
       this.message = text;
-      setTimeout(() => {
+      this.duration = duration;
+      this.timer = setTimeout(() => {
         this.show = false;
       }, duration);
+    },
+    close() {
+      this.show = false;
+      clearTimeout(this.timer);
     },
   },
 };

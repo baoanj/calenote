@@ -7,24 +7,28 @@ import store from '@/store';
 import '@/styles/variables.css';
 import '@/styles/main.css';
 // import './reuse';
-import MyPlugin from './plugin';
+import honor from './use-plugin';
 import App from './App.vue';
 
 Vue.config.productionTip = false;
+Vue.config.errorHandler = (err, vm, info) => {
+  console.error('Main Error:', err.message, info);
+};
 
 Vue.use(Vuetify);
-Vue.use(MyPlugin);
 
+// this.$root - 访问根实例
 new Vue({
   router,
   store,
-  data: { // this.$root - 访问根实例
-    vuexx: 'store from root',
+  honor,
+  data: {
+    vuexx: 'store from root', // this.$root.vuexx
     mainColor: getComputedStyle(document.body).getPropertyValue('--main-color').trim(),
     eventHub: new Vue(),
   },
   methods: {
-    xAction() {
+    xAction() { // this.$root.xAction
       this.vuexx = 'change root store';
     },
   },

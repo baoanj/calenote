@@ -12,18 +12,15 @@
       inputClass="class-for-input"
       v-bind="counts"
       v-model="content"
+      v-slot="{ myTodo, myIndex }"
       @focus="status = '正在输入'"
       @blur="status = '没在输入'"
       @keyup.enter="addOneTodo"
     >
-      <!-- 将 `slotProps` 定义为插槽作用域的名字，此处使用了ES2015解构语法 -->
-      <template slot-scope="{ myTodo, myIndex }">
-        <!-- 为待办项自定义一个模板，通过 `slotProps` 定制每个待办项。-->
-        <span>{{ myIndex }} - </span>
-        <span :class="{'todo-complete': myTodo.isComplete}">
-          {{ myTodo.text }}
-        </span>
-      </template>
+      <span>{{ myIndex }} - </span>
+      <span :class="{'todo-complete': myTodo.isComplete}">
+        {{ myTodo.text }}
+      </span>
     </Counter>
     <div>
       <v-btn @click="focusCounterInput">REF-PARENT</v-btn>
@@ -128,7 +125,22 @@
     <p>三十天后：{{ now | daysLater(30) | timeFormat('MM/DD/YYYY 周W DD-MM-YYYY') }}</p>
     <p>五百天后：{{ now | daysLater(500) | timeFormat('YYYY年M月D日 h点m分s秒 星期W') }}</p>
   </div>
-  <PrimaryMessage ref="homeMessage"></PrimaryMessage>
+  <div class="grid-card">
+    <p
+      :title="now | addTail('时间戳(点击刷新)')"
+      @click="now = Date.now()"
+    >现在：{{ now | timeFormat }}</p>
+    <p>三天后：{{ now | daysLater(3) | timeFormat('YYYY/MM/DD hh:mm:ss 星期W') }}</p>
+    <p>一周后：{{ now | daysLater(7) | timeFormat('M.D h:m') }}</p>
+    <p>三十天后：{{ now | daysLater(30) | timeFormat('MM/DD/YYYY 周W DD-MM-YYYY') }}</p>
+    <p>五百天后：{{ now | daysLater(500) | timeFormat('YYYY年M月D日 h点m分s秒 星期W') }}</p>
+  </div>
+  <PrimaryMessage ref="homeMessage">
+    <template #[dynamicSlotName]="{ duration: msec = 0 }">
+      <v-icon v-if="msec <= 2000" size="18px">info</v-icon>
+      <v-icon v-else size="18px" @click="closeMessage">close</v-icon>
+    </template>
+  </PrimaryMessage>
 </div>
 </template>
 
@@ -156,6 +168,8 @@ export default {
     store: Object,
   },
   mounted() {
+    console.log('this.$honor', this.$honor);
+    console.log('this.$honoro', this.$honoro);
     console.log('Home: mounted');
 
     // $on,$once,$off - 程序化的事件侦听器
@@ -177,6 +191,21 @@ export default {
   },
   deactivated() {
     console.log('Home: deactivated');
+  },
+  /**
+   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+   * 当捕获一个来自子孙组件的错误时被调用。
+   * 此钩子会收到三个参数：错误对象、发生错误的组件实例以及一个包含错误来源信息的字符串。
+   * 此钩子可以返回 false 以阻止该错误继续向上传播。
+   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+   * 一个 errorCaptured 钩子能够返回 false 以阻止错误继续向上传播。
+   * 本质上是说“这个错误已经被搞定了且应该被忽略”。
+   * 它会阻止其它任何会被这个错误唤起的 errorCaptured 钩子和全局的 config.errorHandler。
+   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+   */
+  errorCaptured(err, vm, info) {
+    console.error('Home Error:', err.message, info);
+    return false;
   },
   data() {
     return {
@@ -223,8 +252,9 @@ export default {
       firstNumber: 20,
       secondNumber: 40,
       inputHints: [],
-      inputHistory: ['123', '456', 'abc'],
+      inputHistory: ['123', '456', 'abc', '4561', 'abc1', '4562', 'abc2', '4563', 'abc3', '4564', 'abc4'],
       now: Date.now(),
+      dynamicSlotName: 'prefix',
     };
   },
   methods: {
@@ -237,7 +267,8 @@ export default {
     focusCounterInput() {
       this.$refs.counter.parentFocus();
       this.$emit('counterWidthMinus', 10);
-      this.$refs.homeMessage.msg(this.status);
+      this.dynamicSlotName = Math.random() < 0.5 ? 'prefix' : 'postfix';
+      this.$refs.homeMessage.msg(this.status, Math.ceil(Math.random() * 5) * 1000);
     },
     addOneTodo() {
       const num = this.counts.todos.length + 1;
@@ -246,6 +277,9 @@ export default {
         text: String.fromCharCode(97 + num).repeat(3),
         isComplete: Math.random() < 0.5,
       });
+    },
+    closeMessage() {
+      this.$refs.homeMessage.close();
     },
   },
   computed: {

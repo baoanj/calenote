@@ -50,6 +50,9 @@ export default {
   mounted() {
     document.title = this.$route.meta.title;
   },
+  errorCaptured(err, vm, info) {
+    console.error('App Error:', err.message, info);
+  },
   watch: {
     '$route.meta.title': (val) => {
       document.title = val || 'calenote';
